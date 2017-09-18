@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>详情页--Demo 中心</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<link rel="stylesheet" href="/static/css/base.css">
+<link rel="stylesheet" href="/static/css/app.css">
+<!--[if lt IE 9]>
+<script src="js/html5shiv.min.js"></script>
+<![endif]-->
+</head>
+
+<body>
+<div class="app">
+<header class="g-hd">
+    <div class="g-cnt">
+        <a class="logo" href="/">Demo</a>
+        <nav class="m-nav">
+            <ul class="nav-cnt f-cb">
+                <li class="nav-item" :class="currentNav == index ? 'on' : ''" v-for="(nav, index) in navList">
+                    <h3><a :href="nav.url">{{nav.text}}</a><i></i></h3>
+                </li>
+            </ul>
+        </nav>
+        <div class="hd-btn f-fr">
+            <a class="u-btn u-btn-primary" href="#">登录</a>
+            <a class="u-btn" href="#">注册</a>
+        </div>
+        <div class="hd-user f-fr f-dn">
+            <i></i>
+            <span>管理员</span>
+        </div>
+    </div>
+</header>
+<nav class="g-cnt m-crumb m-crumb-rit">
+    <ul class="f-cb">
+        <li><a href="#">面包屑</a></li>
+        <li><a href="#">面包屑</a></li>
+        <li>面包屑</li>
+    </ul>
+</nav>
+<main class="g-bd g-cnt">
+    <div class="m-detail">
+        <div class="detail-hd f-cb">
+            <div class="f-fl">
+                <h2 class="detail-tit">{{cntData.title}}</h2>
+                <p class="detail-time">{{cntData.time}}</p>
+                <div class="detail-type"><span>{{cntData.type}}</span></div>
+            </div>
+            <div class="f-fr">
+                <div class="detail-btn">
+                    <a class="u-btn u-btn-primary u-btn-lg" :href="cntData.previewUrl">Demo 预览</a>
+                    <a class="u-btn u-btn-lg" :href="cntData.packageUrl">打包下载</a>
+                </div>
+                <div class="detail-tag">
+                    <div class="ant-tag" v-for="tag in cntData.tag.split(',')"><span class="ant-tag-text">{{tag}}</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="detail-bd">
+            <div class="detail-img"><img :src="cntData.image" alt=""></div>
+            {{cntData.content}}
+        </div>
+    </div>
+</main>
+<footer class="g-ft">
+    <p class="ft-copy">© 2017 Varued.com. All rights reserved. / Designed by <a href="http://varyu.com">Evan Xu</a> / Storage By <a href="https://www.upyun.com" target="_blank"><img src="/static/images/upyun.svg" alt=""></a></p>
+</footer>
+</div>
+<script src="/static/js/jquery.js"></script>
+<script src="/static/js/vue.js"></script>
+<script src="/static/js/app.js"></script>
+<script>
+var app = new Vue({
+    el: '.m-detail',
+    data: {
+        cntData: ''
+    },
+    created: function() {
+        this.getCntData();
+    },
+    methods: {
+        getUrlId: function() {
+            let url = window.location.href;
+            let parmId = (url.substring(url.lastIndexOf('\/'))).split('/');
+            return parmId[1];
+        },
+        getCntData: function() {
+            let _self = this;
+            $.ajax({
+                url: '/api/content',
+                type: 'POST',
+                dataType: 'json',
+                data: {id: _self.getUrlId},
+                success: function(data) {
+                    _self.cntData = data[0];
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
+        }
+    }
+});
+</script>
+</body>
+</html>

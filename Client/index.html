@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>首页--Demo 中心</title>
+<meta name="keywords" content="">
+<meta name="description" content="">
+<link rel="stylesheet" href="/static/css/base.css">
+<link rel="stylesheet" href="/static/css/app.css">
+<!--[if lt IE 9]>
+<script src="js/html5shiv.min.js"></script>
+<![endif]-->
+</head>
+
+<body>
+<header class="g-hd">
+    <div class="g-cnt">
+        <a class="logo" href="/">Demo</a>
+        <nav class="m-nav">
+            <ul class="nav-cnt f-cb">
+                <li class="nav-item" :class="currentNav == index ? 'on' : ''" v-for="(nav, index) in navList">
+                    <h3><a :href="nav.url">{{nav.text}}</a><i></i></h3>
+                </li>
+            </ul>
+        </nav>
+        <div class="hd-btn f-fr">
+            <a class="u-btn u-btn-primary" href="#">登录</a>
+            <a class="u-btn" href="#">注册</a>
+        </div>
+        <div class="hd-user f-fr f-dn">
+            <i></i>
+            <span>管理员</span>
+        </div>
+    </div>
+</header>
+<main class="g-bd g-cnt" style="background:#f4f4f4;">
+    <div class="m-card f-cb">
+        <div class="card-item" v-for="item in cntData">
+            <a class="card-img" :href="'/detail/' + item.id"><img :src="item.image" alt=""></a>
+            <div class="card-info">
+                <p class="card-tit">{{item.title}}</p>
+                <p class="card-type">{{item.type}}</p>
+                <div class="card-tag">
+                    <div class="ant-tag" v-for="tag in item.tag.split(',')"><span class="ant-tag-text">{{tag}}</span></div>
+                </div>
+                <a class="u-btn" :href="item.previewUrl">预览</a>
+            </div>
+        </div>
+    </div>
+</main>
+<footer class="g-ft">
+    <p class="ft-copy">© 2017 Varued.com. All rights reserved. / Designed by <a href="http://varyu.com">Evan Xu</a> / Storage By <a href="https://www.upyun.com" target="_blank"><img src="/static/images/upyun.svg" alt=""></a></p>
+</footer>
+</div>
+<script src="/static/js/jquery.js"></script>
+<script src="/static/js/vue.js"></script>
+<script src="/static/js/app.js"></script>
+<script>
+var app = new Vue({
+    el: '.m-card',
+    data: {
+        cntData: null
+    },
+    created: function() {
+        this.getCntData();
+    },
+    methods: {
+        getCntData: function() {
+            let _self = this;
+            $.ajax({
+                url: '/api/list',
+                type: 'GET',
+                success: function(data) {
+                    _self.cntData = data;
+                },
+                error: function(err) {
+                    console.log(err);
+                }
+            });
+        }
+    }
+});
+</script>
+</body>
+</html>
